@@ -88,8 +88,8 @@ def p_quoted_list(p):
     'quoted_list : QUOTE list'
     #p[0] = p[2]
     #p[0] = [p[1]] + p[2]
-
     p[0] = ["quote"] + [p[2]]
+
 
 def p_list(p):
     'list : LPAREN items RPAREN'
@@ -97,6 +97,7 @@ def p_list(p):
 
 def p_items(p):
     'items : item items'
+
     p[0] = [p[1]] + p[2]
 
 def p_items_empty(p):
@@ -127,7 +128,7 @@ def p_item_empty(p):
     'item : empty'
     p[0] = p[1]
 
-def p_call(p):
+def p_call_PLY(p):
     'call : LPAREN SIMB items RPAREN'
     global ast
     if DEBUG: print "Calling", p[2], "with", p[3]
@@ -136,10 +137,23 @@ def p_call(p):
     ast = [p[2]] + [i for i in p[3]]
     print "ast is: ", ast
     p[0] = ast
-
+def p_call_swift(p):
+    'call : LET items'
+    global ast
+    if DEBUG: print "Calling", p[1], "with", p[2]
+    #if isinstance(p[3], list) and isinstance(p[3][0], list) and p[3][0][0] == "'":
+    #p[3] = [["quote"] + [p[3][0][1:]]] # Replace single quote with the word "quote"
+    ast = [p[1]] + [i for i in p[2]]
+    print "ast is: ", ast
+    p[0] = ast
+def p_atom_swift(p):
+    'atom : atom'
 def p_atom_simbol(p):
-    'atom : SIMB'
-    p[0] = p[1]
+    '''atom : SIMB '''
+    if len(p) == 2:
+       p[0] = p[1]
+    else:
+        p[0] = p[2]
 
 def p_atom_bool(p):
     'atom : bool'
