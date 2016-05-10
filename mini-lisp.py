@@ -52,7 +52,7 @@ if __name__ == '__main__':
 List   = list         # A Lisp List is implemented as a Python list
 Number = (int, float) # A Lisp Number is implemented as a Python int or float
 
-################ Parsing: parse, tokenize, and read_from_tokens
+################ Parsing: par, tokenize, and read_from_tokens
 
 
 ################ Environments

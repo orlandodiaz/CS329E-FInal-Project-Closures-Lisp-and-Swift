@@ -10,7 +10,6 @@ Symbol = str          # A Lisp Symbol is implemented as a Python str
 List   = list         # A Lisp List is implemented as a Python list
 Number = (int, float) # A Lisp Number is implemented as a Python int or float
 
-################ Parsing: parse, tokenize, and read_from_tokenes
 
 ################ Environments
 
@@ -23,7 +22,7 @@ def standard_env():
         '+':lambda *x: reduce(lambda y, z: y + z, x) ,
         '-':lambda *x: -x[0] if len(x) == 1 else reduce(lambda y, z: y-z, x), '*':lambda *x: reduce(lambda y, z: z*y, x ),
         '/':lambda *x: x[0] / reduce(lambda y, z: y * z, x[1:])   if reduce(lambda y, z: y * z, x[1:])!= 0 else "ZeroDivisionError: Cannot divide by 0! ",
-        '>':op.gt, '<':op.lt, '>=':op.ge, '<=':op.le, '=':op.eq,
+        '>':op.gt, '<':op.lt, '>=':op.ge, '<=':op.le, '==':op.eq,
         'abs':     abs,
         'append':  op.add,
         'apply':   apply,
@@ -63,7 +62,7 @@ class Env(dict):
         self.outer = outer
     def find(self, var):
         "Find the innermost Env where var appears."
-        return self if (var in self) else self.outer.find(var)
+        return self if (var in self) else self.outer.find(var) if self.outer is not None else None
 
 global_env = standard_env()
 
@@ -76,6 +75,19 @@ class Procedure(object):
         self.parms, self.body, self.env = parms, body, env
     def __call__(self, *args): 
         return eval(self.body, Env(self.parms, args, self.env))
+######################### CONSTANT CLOUSRE
+class Constant(object):
+    def f(self):
+        data = {
+          '$update':lambda x: data.update(x)
+        }
+        def cf(self, d):
+           if d in data:
+               return data[d]
+           else:
+               return None
+        return cf
+    run = f(1)
 
 ################ eval
 
@@ -85,7 +97,7 @@ dic = {}
 def eval(x, env=global_env):
     "Evaluate an expression in an environment."
     if isinstance(x, Symbol) :# variable reference
-        return env.find(x)[x]
+        return env.find(x)[x] if env.find(x) is not None else x
     elif not isinstance(x, List):  # constant literal
         return x                
     elif x[0] == 'quote':          # (quote exp)
@@ -95,10 +107,15 @@ def eval(x, env=global_env):
         (_, test, conseq, alt) = x
         exp = (conseq if eval(test, env) else alt)
         return eval(exp, env)
-    elif x[0] == 'define':         # (define var exp)
+    elif x[0] == 'var' or x[0] == '=':         # (define var exp)
         (_, var, exp) = x
-        env[var] = eval(exp, env)
-    elif x[0] == 'set!':           # (set! var exp)
+        s1 = Constant()
+        if s1.run(var) is None:
+            a = {var:exp}
+            env[var] = eval(exp, env)
+        else:
+            return "error: cannot assign to value: "+ var + " is a 'let' constant"
+    elif x[0] == 'set':           # (set var exp)
         (_, var, exp) = x
         env.find(var)[var] = eval(exp, env)
     elif x[0] == 'lambda':         # (lambda (var...) body)
@@ -114,9 +131,18 @@ def eval(x, env=global_env):
         return x[1]
     elif x[0] == 'let':
         num = eval(x[1],env)
+
         results = [eval(exp,env) for exp in x[2:]]
+
         dic.clear()
-        return results[-1]
+
+        return results[-1] if len(results) > 0 else num
+    elif x[0] == 'swiftlet':
+        s1 = Constant()
+        (_, var ,exp) = x
+        a = {var:exp}
+        s1.run('$update')(a)
+        env[var] = eval(exp, env)
     else:                          # (proc arg...)
         proc = eval(x[0], env)
         s = x[1:]
