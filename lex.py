@@ -8,14 +8,16 @@ import ply.lex as lex
 
 # List of token names.   
 tokens = ('QUOTE', 'SIMB', 'NUM', 'LPAREN', 'RPAREN', \
-'NIL', 'TRUE', 'FALSE', 'TEXT')
-literals = ['.']
+'NIL', 'TRUE', 'FALSE', 'TEXT','LET','BACKSLASH','STRING')
+literals = ['.','\"',"\\",]
 # Reserved words
 reserved = {
     'nil' : 'NIL',
+    'let': 'LET',
 }
 
 # Regular expression rules for simple tokens
+t_BACKSLASH = r'\\'
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_QUOTE = r'\''
@@ -41,6 +43,7 @@ def t_TEXT(t):
     #r'\'[a-zA-Z0-9_+\*\- :,]*\''
     t.type = reserved.get(t.value,'TEXT')    # Check for reserved words
     return t
+
 
 # Define a rule so we can track line numbers
 def t_newline(t):

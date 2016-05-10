@@ -28,11 +28,11 @@ def standard_env():
         'apply':   apply,
         'begin':   lambda *x: x[-1],
         'car':     lambda x: x[0],
-        'cdr':     lambda x: x[1:], 
+        'cdr':     lambda x: x[1:],
         'cons':    lambda x, y: [x]+y,
         'concat':   lambda x, y: x + y,
-        'eq?':     op.is_, 
-        'equal?':  op.eq, 
+        'eq?':     op.is_,
+        'equal?':  op.eq,
         'length':  len,
         'count': lambda x,y:len([i for i in y if i == x]),
         'distinct':lambda x:[j for j in {i for i in x}],
@@ -46,12 +46,12 @@ def standard_env():
         'max':     max,
         'min':     min,
         'not':     op.not_,
-        'null?':   lambda x: x == [], 
-        'number?': lambda x: isinstance(x, Number),   
+        'null?':   lambda x: x == [],
+        'number?': lambda x: isinstance(x, Number),
         'procedure?': callable,
         'round':   round,
         'symbol?': lambda x: isinstance(x, Symbol),
-
+        'abs': abs,
     })
     return env
 
@@ -129,20 +129,22 @@ def eval(x, env=global_env):
     elif isinstance(x[0],Symbol) and x[0] not in env and len(x) == 2 and isinstance(x[1], Number):
         dic[x[0]] = x[1]
         return x[1]
-    elif x[0] == 'let':
+    elif x[0] == 'let1':
         num = eval(x[1],env)
-
         results = [eval(exp,env) for exp in x[2:]]
-
         dic.clear()
-
         return results[-1] if len(results) > 0 else num
-    elif x[0] == 'swiftlet':
+    elif x[0] == 'let':
         s1 = Constant()
-        (_, var ,exp) = x
+        (_, var,a,exp) = x
         a = {var:exp}
         s1.run('$update')(a)
         env[var] = eval(exp, env)
+
+    elif x[0] == "random":
+        exec('from java.lang import Math; toReturn = Math.random()')
+        return toReturn
+
     else:                          # (proc arg...)
         proc = eval(x[0], env)
         s = x[1:]
