@@ -1,5 +1,3 @@
-package cannata;
-
 import java.util.*;
 
 public class ListComprehension {
