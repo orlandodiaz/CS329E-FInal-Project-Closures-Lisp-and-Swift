@@ -10,8 +10,8 @@ DEBUG = True
 name = {}
 let_dict = {} # Dictionary that stores variable name and value ( Example: {'a' : 3} )
 
-global ast
-ast = []
+global AST
+AST = []
 
 def _print(l):
     print lisp_str(l[0])
@@ -132,11 +132,11 @@ def p_item_empty(p):
 
 def p_call_print(p):
     'call : PRINT LPAREN items RPAREN'
-    global ast
+    global AST
     if DEBUG: print "Calling", p[1], "with", p[3]
-    ast = [p[1]] + [i for i in p[3]]
-    print "ast is: ", ast
-    p[0] = ast
+    AST = [p[1]] + [i for i in p[3]]
+    print "AST is: ", AST
+    p[0] = AST
 def p_call(p):
     '''call : LET items
             | VAR items
@@ -144,26 +144,26 @@ def p_call(p):
             | LPAREN SIMB items RPAREN
             | LPAREN OP items RPAREN'''
 
-    global ast
+    global AST
     if len(p) <4:
         if DEBUG: print "Calling", p[1], "with", p[2]
-        ast = [p[1]] + [i for i in p[2]]
+        AST = [p[1]] + [i for i in p[2]]
     else:
        if DEBUG: print "Calling", p[2], "with", p[3]
     #if isinstance(p[3], list) and isinstance(p[3][0], list) and p[3][0][0] == "'":
     #p[3] = [["quote"] + [p[3][0][1:]]] # Replace single quote with the word "quote"
-       ast = [p[2]] + [i for i in p[3]]
-    print "ast is: ", ast
-    p[0] = ast
+       AST = [p[2]] + [i for i in p[3]]
+    print "AST is: ", AST
+    p[0] = AST
 '''def p_call_swift(p):
     'call :
-    global ast
+    global AST
     if DEBUG: print "Calling", p[1], "with", p[2]
     #if isinstance(p[3], list) and isinstance(p[3][0], list) and p[3][0][0] == "'":
     #p[3] = [["quote"] + [p[3][0][1:]]] # Replace single quote with the word "quote"
-    ast = [p[1]] + [i for i in p[2]]
-    print "ast is: ", ast
-    p[0] = ast
+    AST = [p[1]] + [i for i in p[2]]
+    print "AST is: ", AST
+    p[0] = AST
 '''
 '''def p_item_bs(p):
     'item : BACKSLASH LPAREN atom RPAREN'
