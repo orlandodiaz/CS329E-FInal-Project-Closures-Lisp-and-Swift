@@ -114,8 +114,12 @@ def eval(x, env=global_env):
         else:
             (_, var, exp) = x
         if s1.run(var) is None:
-            a = {var:exp}
-            env[var] = eval(exp, env)
+            x = eval(exp, env)
+            if isinstance(x,List):
+              print(x)
+              x = [str(i) if not isinstance(i, List) else str(i[0]).replace('"',"") for i in x ]
+              x = " ".join(x)
+            env[var] = x
         else:
             return "error: cannot assign to value: "+ var + " is a 'let' constant"
     elif x[0] == 'set':           # (set var exp)
@@ -150,15 +154,11 @@ def eval(x, env=global_env):
             (_, eq,var,exp) = x
         else:
             (_, var, exp) = x
-
         x = eval(exp, env)
-
         if isinstance(x,List):
-           x = [str(i) if not isinstance(i, List) else str(i[0]) for i in x ]
-           print x
+           x = [str(i) if not isinstance(i, List) else str(i[0]).replace('"',"") for i in x ]
            x = " ".join(x)
         a = {var:x}
-
         env[var] = x
         s1.run('$update')(a)
 

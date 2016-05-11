@@ -179,14 +179,14 @@ def p_item_dq(p):
         if len(p) == 7:
             p[0] = (["list"]+[p[1]] + p[4] +[p[6]]) if len(p[4])> 1 else ["list"]+ [p[1]] + [["list"]+p[4]] +[p[6]]
         else:
-            p[0] = (["list"]+ [p[1]] + [p[4]] +[p[6]] + [p[7]]) if len(p[4])> 1 else ["list"]+ [p[1]] + [["list"]+p[4]] +[p[6]] + [p[7]]
+            p[0] = (["list"]+ [p[1]] + [p[4]] +[p[6] + p[7]]) if len(p[4])> 1 else ["list"]+ [p[1]] + [["list"]+p[4]] +[p[6] + p[7]]
     elif len(p) == 4:
-        p[0] = ["list"]+[p[1]] + [p[2]] + [p[3]]
+        p[0] = ["list"] + [p[1] + str(p[2]) + p[3]]
     else:
         if len(p) == 8:
-            p[0] = (["list"]+[p[1]] + [p[2]] + [p[5]] +[p[7]]) if len(p[5])>1 else ["list"]+[p[1]] + [p[2]] +[["list"]+p[5]]+[p[7]]
+            p[0] = (["list"]+[p[1] + p[2]] + [p[5]] +[p[7]]) if len(p[5])>1 else ["list"]+[p[1] + p[2]] +[["list"]+p[5]]+[p[7]]
         else:
-            p[0] = (["list"]+ [p[1]] + [p[2]] + [p[5]] + [p[7]]+ [p[8]]) if len(p[5]) > 1 else ["list"]+ [p[1]] + [p[2]] + [["list"]+p[5]] + [p[7]]+ [p[8]]
+            p[0] = (["list"]+ [p[1] + p[2]] + [p[5]] + [p[7]+ p[8]]) if len(p[5]) > 1 else ["list"]+ [p[1] + p[2]] + [["list"]+p[5]] + [p[7]+ p[8]]
 def p_atom_s(p):
     'atom : atom SIMB'
     p[0] = p[1]+" " + p[2]
