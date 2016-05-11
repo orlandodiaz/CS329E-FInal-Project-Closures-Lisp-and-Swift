@@ -8,7 +8,7 @@ import ply.lex as lex
 
 # List of token names.   
 tokens = ('QUOTE', 'SIMB', 'NUM', 'LPAREN', 'RPAREN', \
-'NIL', 'TRUE', 'FALSE', 'TEXT','LET','BACKSLASH','STRING','PRINT','OP','DOUBLEQ','VAR')
+'NIL', 'TRUE', 'FALSE', 'TEXT','LET','BACKSLASH','STRING','PRINT','OP','DOUBLEQ','VAR', 'MAPP', 'LAMBDA')
 literals = ['.','\"',"\\",'=']
 # Reserved words
 reserved = {
@@ -48,7 +48,10 @@ def t_TEXT(t):
     t.type = reserved.get(t.value,'TEXT')    # Check for reserved words
     return t
 
-
+def t_MAPP(t):
+    r'mapp'
+    return t
+    
 # Define a rule so we can track line numbers
 def t_newline(t):
     r'\n+'

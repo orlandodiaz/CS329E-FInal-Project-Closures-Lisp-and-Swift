@@ -42,7 +42,6 @@ def standard_env():
         'list':    lambda *x: list(x),
         'list?':   lambda x: isinstance(x,list),
         'exec':    lambda x: eval(compile(x,'None','single')),
-        'map':     map,
         'max':     max,
         'min':     min,
         'not':     op.not_,
@@ -52,7 +51,7 @@ def standard_env():
         'round':   round,
         'symbol?': lambda x: isinstance(x, Symbol),
         'abs': abs,
-        'map':map,
+        'mapp':    map, 
     })
     return env
 
@@ -66,6 +65,17 @@ class Env(dict):
         return self if (var in self) else self.outer.find(var) if self.outer is not None else None
 
 global_env = standard_env()
+
+
+# evaluates lambda on a list
+
+def eval_list(lambda1, list1):
+    g = lambda1.find(':')
+    ending = lambda1[g+1:]
+    e = ending.lstrip()
+    e = e.rstrip()
+    return eval(['lambda', 4, e], global_env)
+
 
 
 ################ Procedures
@@ -129,6 +139,8 @@ def eval(x, env=global_env):
     elif x[0] == 'lambda':         # (lambda (var...) body)
         (_, parms, body) = x
         return Procedure(parms, body, env)
+    elif x[0] == 'mapp':
+        return eval_list(x[1],x[2])
     elif x[0] == 'exec':
         proc = eval(x[0], env)
         import re

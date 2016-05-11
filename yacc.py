@@ -119,11 +119,9 @@ def p_item_atom(p):
 
 def p_item_list(p):
     'item : list'
-    p[0] = p[1]
-
-def p_item_list(p):
     'item : quoted_list'
     p[0] = p[1]
+
 
 def p_item_call(p):
     'item : call'
@@ -158,6 +156,15 @@ def p_call(p):
        AST = [p[2]] + [i for i in p[3]]
     print "AST is: ", AST
     p[0] = AST
+
+
+def p_call_mapp(p):
+    'call : LPAREN MAPP LAMBDA QUOTE LPAREN items RPAREN RPAREN'
+    global AST
+    ast = [p[2], p[3][1:-1], p[6]]
+    print "AST is ", AST
+    p[0] = AST
+
 
 def p_item_dq(p):
     '''item : atom1 BACKSLASH LPAREN items atom2
