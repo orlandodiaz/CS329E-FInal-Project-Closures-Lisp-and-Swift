@@ -4,8 +4,8 @@ import cmd
 
 class MiniLisp(cmd.Cmd):     # See https://docs.python.org/2/library/cmd.html
     """
-    MiniLisp evalúa expresiones sencillas con sabor a lisp, 
-    más información en http://www.juanjoconti.com.ar
+    Minilisp evaluates simple expressions lisp style, more information
+    at http://www.juanjoconti.com.ar
     """
 
     def __init__(self):
