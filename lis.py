@@ -51,7 +51,7 @@ def standard_env():
         'round':   round,
         'symbol?': lambda x: isinstance(x, Symbol),
         'abs': abs,
-        'mapp':    map, 
+        'mapp':  map,
     })
     return env
 
@@ -67,14 +67,6 @@ class Env(dict):
 global_env = standard_env()
 
 
-# evaluates lambda on a list
-
-def eval_list(lambda1, list1):
-    g = lambda1.find(':')
-    ending = lambda1[g+1:]
-    e = ending.lstrip()
-    e = e.rstrip()
-    return eval(['lambda', 4, e], global_env)
 
 
 
@@ -118,18 +110,24 @@ def eval(x, env=global_env):
         (_, test, conseq, alt) = x
         exp = (conseq if eval(test, env) else alt)
         return eval(exp, env)
+    elif x[0] == 'define':         # (define var exp)
+        (_, var, exp) = x
+        env[var] = eval(exp, env)
     elif x[0] == 'var' or x[0] == '=': # (define var exp)
         s1 = Constant()
         if len(x) == 4:
             (_, eq,var,exp) = x
         else:
             (_, var, exp) = x
+        '''if x[0] == "=":
+            a = eval(var,env)
+            if a is None:
+                return "error: use of unresolved identifier " + str(var)'''
         if s1.run(var) is None:
             x = eval(exp, env)
-            if isinstance(x,List):
-              print(x)
-              x = [str(i) if not isinstance(i, List) else str(i[0]).replace('"',"") for i in x ]
-              x = " ".join(x)
+            if isinstance(x,List) and not isinstance(x[0], Number):
+               x = [str(i) if not isinstance(i, List) else str(i[0]).replace('"',"") for i in x ]
+               x = " ".join(x)
             env[var] = x
         else:
             return "error: cannot assign to value: "+ var + " is a 'let' constant"
@@ -168,9 +166,9 @@ def eval(x, env=global_env):
         else:
             (_, var, exp) = x
         x = eval(exp, env)
-        if isinstance(x,List):
-           x = [str(i) if not isinstance(i, List) else str(i[0]).replace('"',"") for i in x ]
-           x = " ".join(x)
+        if isinstance(x,List) and not isinstance(x[0], Number):
+            x = [str(i) if not isinstance(i, List) else str(i[0]).replace('"',"") for i in x ]
+            x = " ".join(x)
         a = {var:x}
         env[var] = x
         s1.run('$update')(a)

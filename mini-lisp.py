@@ -11,7 +11,7 @@ class MiniLisp(cmd.Cmd):     # See https://docs.python.org/2/library/cmd.html
     def __init__(self):
         cmd.Cmd.__init__(self)
         self.prompt = "ml> "
-        self.intro  = "Bienvenido a MiniLisp"
+        self.intro  = "Welcome"
 
     def do_exit(self, args):
         """Exits from the console"""

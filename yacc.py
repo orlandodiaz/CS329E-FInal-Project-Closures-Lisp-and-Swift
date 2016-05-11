@@ -102,7 +102,10 @@ def p_items(p):
 def p_items_op(p):
     'items : item OP item'
     p[0] = [p[2]] + [p[1]] +[p[3]]
-
+'''def p_item_op(p):
+    ''atom : SIMB OP NUM
+            |  SIMB OP SIMB''
+    p[0] = [p[2]] + [p[1]] +[p[3]]'''
 def p_items_empty(p):
     'items : empty'
     p[0] = []
@@ -118,8 +121,8 @@ def p_item_atom(p):
     p[0] = p[1]'''
 
 def p_item_list(p):
-    'item : list'
-    'item : quoted_list'
+    '''item : list
+          | quoted_list'''
     p[0] = p[1]
 
 
@@ -144,7 +147,6 @@ def p_call(p):
             | LPAREN LET items RPAREN
             | LPAREN SIMB items RPAREN
             | LPAREN OP items RPAREN'''
-
     global AST
     if len(p) <4:
         if DEBUG: print "Calling", p[1], "with", p[2]
@@ -158,12 +160,6 @@ def p_call(p):
     p[0] = AST
 
 
-def p_call_mapp(p):
-    'call : LPAREN MAPP LAMBDA QUOTE LPAREN items RPAREN RPAREN'
-    global AST
-    ast = [p[2], p[3][1:-1], p[6]]
-    print "AST is ", AST
-    p[0] = AST
 
 
 def p_item_dq(p):
