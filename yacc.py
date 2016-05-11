@@ -158,20 +158,7 @@ def p_call(p):
        AST = [p[2]] + [i for i in p[3]]
     print "AST is: ", AST
     p[0] = AST
-'''def p_call_swift(p):
-    'call :
-    global AST
-    if DEBUG: print "Calling", p[1], "with", p[2]
-    #if isinstance(p[3], list) and isinstance(p[3][0], list) and p[3][0][0] == "'":
-    #p[3] = [["quote"] + [p[3][0][1:]]] # Replace single quote with the word "quote"
-    AST = [p[1]] + [i for i in p[2]]
-    print "AST is: ", AST
-    p[0] = AST
-'''
-'''def p_item_bs(p):
-    'item : BACKSLASH LPAREN atom RPAREN'
-    print("bb")
-    p[0] = [p[3]]'''
+
 def p_item_dq(p):
     '''item : atom1 BACKSLASH LPAREN items atom2
              | atom1 DOUBLEQ'''
