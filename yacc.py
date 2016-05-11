@@ -127,7 +127,7 @@ def p_item_call(p):
 def p_item_empty(p):
     'item : empty'
     p[0] = p[1]
-def p_item_op(p):
+def p_items_op(p):
     'items : item OP item'
     p[0] = [p[2]] + [p[1]] +[p[3]]
 def p_call_print(p):
@@ -139,6 +139,7 @@ def p_call_print(p):
     p[0] = ast
 def p_call(p):
     '''call : LET items
+            | VAR items
             | LPAREN LET items RPAREN
             | LPAREN SIMB items RPAREN
             | LPAREN OP items RPAREN'''
@@ -164,13 +165,13 @@ def p_call(p):
     print "ast is: ", ast
     p[0] = ast
 '''
+
 def p_item_dq(p):
     'item : DOUBLEQ atom DOUBLEQ'
     p[0] = p[1] + str(p[2]) +p[3]
 def p_atom_simbol(p):
     '''atom : SIMB '''
     #if len(p) == 2:
-
     p[0] = p[1]
     #else:
        # print p[2]

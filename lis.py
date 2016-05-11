@@ -107,9 +107,12 @@ def eval(x, env=global_env):
         (_, test, conseq, alt) = x
         exp = (conseq if eval(test, env) else alt)
         return eval(exp, env)
-    elif x[0] == 'var' or x[0] == '=':         # (define var exp)
-        (_, var, exp) = x
+    elif x[0] == 'var' or x[0] == '=': # (define var exp)
         s1 = Constant()
+        if len(x) == 4:
+            (_, eq,var,exp) = x
+        else:
+            (_, var, exp) = x
         if s1.run(var) is None:
             a = {var:exp}
             env[var] = eval(exp, env)
