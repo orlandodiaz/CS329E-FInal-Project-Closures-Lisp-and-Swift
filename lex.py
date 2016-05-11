@@ -9,7 +9,7 @@ import ply.lex as lex
 # List of token names.   
 tokens = ('QUOTE', 'SIMB', 'NUM', 'LPAREN', 'RPAREN', \
 'NIL', 'TRUE', 'FALSE', 'TEXT','LET','BACKSLASH','STRING','PRINT','OP','DOUBLEQ','VAR')
-literals = ['.','\"',"\\",]
+literals = ['.','\"',"\\",'=']
 # Reserved words
 reserved = {
     'nil' : 'NIL',
@@ -24,7 +24,7 @@ t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_QUOTE = r'\''
 t_TRUE = r'\#t'
-t_DOUBLEQ = r'\"'
+t_DOUBLEQ = r'"'
 def t_NUM(t):
     r'\d+'
     try:
@@ -38,7 +38,7 @@ def t_OP(t):
     t.type = reserved.get(t.value,'OP')    # Check for reserved words
     return t
 def t_SIMB(t):
-    r'[a-zA-Z_][a-zA-Z0-9_+\*\-?=]*'
+    r'[a-zA-Z_][a-zA-Z0-9_+\*\-?.]*'
     t.type = reserved.get(t.value,'SIMB')    # Check for reserved words
     return t
 

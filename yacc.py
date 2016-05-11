@@ -97,8 +97,11 @@ def p_list(p):
 
 def p_items(p):
     'items : item items'
-
     p[0] = [p[1]] + p[2]
+
+def p_items_op(p):
+    'items : item OP item'
+    p[0] = [p[2]] + [p[1]] +[p[3]]
 
 def p_items_empty(p):
     'items : empty'
@@ -107,7 +110,6 @@ def p_items_empty(p):
 def p_empty(p):
     'empty :'
     pass
-
 def p_item_atom(p):
     'item : atom'
     p[0] = p[1]
@@ -127,9 +129,7 @@ def p_item_call(p):
 def p_item_empty(p):
     'item : empty'
     p[0] = p[1]
-def p_items_op(p):
-    'items : item OP item'
-    p[0] = [p[2]] + [p[1]] +[p[3]]
+
 def p_call_print(p):
     'call : PRINT LPAREN items RPAREN'
     global ast
@@ -165,10 +165,31 @@ def p_call(p):
     print "ast is: ", ast
     p[0] = ast
 '''
-
+'''def p_item_bs(p):
+    'item : BACKSLASH LPAREN atom RPAREN'
+    print("bb")
+    p[0] = [p[3]]'''
 def p_item_dq(p):
-    'item : DOUBLEQ atom DOUBLEQ'
-    p[0] = p[1] + str(p[2]) +p[3]
+    '''item : DOUBLEQ BACKSLASH LPAREN items RPAREN DOUBLEQ
+             | DOUBLEQ item DOUBLEQ
+             | DOUBLEQ item BACKSLASH LPAREN items RPAREN  DOUBLEQ
+             | DOUBLEQ BACKSLASH LPAREN items RPAREN item DOUBLEQ
+             | DOUBLEQ item BACKSLASH LPAREN items RPAREN item DOUBLEQ'''
+    if p[2]  == "\\":
+        if len(p) == 7:
+            p[0] = (["list"]+[p[1]] + p[4] +[p[6]]) if len(p[4])> 1 else ["list"]+ [p[1]] + [["list"]+p[4]] +[p[6]]
+        else:
+            p[0] = (["list"]+ [p[1]] + [p[4]] +[p[6]] + [p[7]]) if len(p[4])> 1 else ["list"]+ [p[1]] + [["list"]+p[4]] +[p[6]] + [p[7]]
+    elif len(p) == 4:
+        p[0] = ["list"]+[p[1]] + [p[2]] + [p[3]]
+    else:
+        if len(p) == 8:
+            p[0] = (["list"]+[p[1]] + [p[2]] + [p[5]] +[p[7]]) if len(p[5])>1 else ["list"]+[p[1]] + [p[2]] +[["list"]+p[5]]+[p[7]]
+        else:
+            p[0] = (["list"]+ [p[1]] + [p[2]] + [p[5]] + [p[7]]+ [p[8]]) if len(p[5]) > 1 else ["list"]+ [p[1]] + [p[2]] + [["list"]+p[5]] + [p[7]]+ [p[8]]
+def p_atom_s(p):
+    'atom : atom SIMB'
+    p[0] = p[1]+" " + p[2]
 def p_atom_simbol(p):
     '''atom : SIMB '''
     #if len(p) == 2:
@@ -190,6 +211,7 @@ def p_atom_num(p):
         p[0] = float(str(p[1]) + str(p[2])+str(p[3]))
 def p_atom_op(p):
     'atom : OP'
+    print p[1]
     p[0] = p[1]
 def p_atom_word(p):
     'atom : TEXT'

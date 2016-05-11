@@ -150,9 +150,18 @@ def eval(x, env=global_env):
             (_, eq,var,exp) = x
         else:
             (_, var, exp) = x
-        a = {var:exp}
+
+        x = eval(exp, env)
+
+        if isinstance(x,List):
+           x = [str(i) if not isinstance(i, List) else str(i[0]) for i in x ]
+           print x
+           x = " ".join(x)
+        a = {var:x}
+
+        env[var] = x
         s1.run('$update')(a)
-        env[var] = eval(exp, env)
+
 
     elif x[0] == "random":
         exec('from java.lang import Math; toReturn = Math.random()')
