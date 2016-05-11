@@ -143,12 +143,8 @@ def eval(x, env=global_env):
         exec(proc(re.sub(r"^'|'$", '', x[1])))
         return toReturn
     elif x[0] == 'print':
-        if len(x) == 1:
-            return
-        elif len(x) == 2:
-            return eval(x[1],env)
-        else:
-           return eval(x[1:], env)
+
+        return eval(x[1:], env) if len(x) > 2 else eval(x[1],env) if len(x) == 2 else None
     elif isinstance(x[0],Symbol) and x[0] not in env and len(x) == 2 and isinstance(x[1], Number):
         dic[x[0]] = x[1]
         return x[1]
