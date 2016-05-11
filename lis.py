@@ -136,7 +136,10 @@ def eval(x, env=global_env):
         return results[-1] if len(results) > 0 else num
     elif x[0] == 'let':
         s1 = Constant()
-        (_, var,a,exp) = x
+        if len(x) == 4:
+            (_, var,eq,exp) = x
+        else:
+            (_, var, exp) = x
         a = {var:exp}
         s1.run('$update')(a)
         env[var] = eval(exp, env)

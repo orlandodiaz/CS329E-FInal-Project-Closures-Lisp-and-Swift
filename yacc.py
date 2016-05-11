@@ -129,16 +129,22 @@ def p_item_empty(p):
     p[0] = p[1]
 
 def p_call_PLY(p):
-    'call : LPAREN SIMB items RPAREN'
+    '''call : LET items
+            | LPAREN LET items RPAREN
+            | LPAREN SIMB items RPAREN'''
     global ast
-    if DEBUG: print "Calling", p[2], "with", p[3]
+    if len(p) <4:
+        if DEBUG: print "Calling", p[1], "with", p[2]
+        ast = [p[1]] + [i for i in p[2]]
+    else:
+       if DEBUG: print "Calling", p[2], "with", p[3]
     #if isinstance(p[3], list) and isinstance(p[3][0], list) and p[3][0][0] == "'":
     #p[3] = [["quote"] + [p[3][0][1:]]] # Replace single quote with the word "quote"
-    ast = [p[2]] + [i for i in p[3]]
+       ast = [p[2]] + [i for i in p[3]]
     print "ast is: ", ast
     p[0] = ast
-def p_call_swift(p):
-    'call : LET items'
+'''def p_call_swift(p):
+    'call :
     global ast
     if DEBUG: print "Calling", p[1], "with", p[2]
     #if isinstance(p[3], list) and isinstance(p[3][0], list) and p[3][0][0] == "'":
@@ -146,14 +152,14 @@ def p_call_swift(p):
     ast = [p[1]] + [i for i in p[2]]
     print "ast is: ", ast
     p[0] = ast
-def p_atom_swift(p):
-    'atom : atom'
+'''
 def p_atom_simbol(p):
     '''atom : SIMB '''
-    if len(p) == 2:
-       p[0] = p[1]
-    else:
-        p[0] = p[2]
+    #if len(p) == 2:
+    p[0] = p[1]
+    #else:
+       # print p[2]
+       # p[0] = p[2]
 
 def p_atom_bool(p):
     'atom : bool'

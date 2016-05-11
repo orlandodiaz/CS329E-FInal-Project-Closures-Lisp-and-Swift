@@ -13,7 +13,7 @@ literals = ['.','\"',"\\",]
 # Reserved words
 reserved = {
     'nil' : 'NIL',
-    'let': 'LET',
+    'let' :'LET'
 }
 
 # Regular expression rules for simple tokens
@@ -22,7 +22,6 @@ t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_QUOTE = r'\''
 t_TRUE = r'\#t'
-t_FALSE = r'\#f'
 
 def t_NUM(t):
     r'\d+'
