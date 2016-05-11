@@ -8,12 +8,13 @@ import ply.lex as lex
 
 # List of token names.   
 tokens = ('QUOTE', 'SIMB', 'NUM', 'LPAREN', 'RPAREN', \
-'NIL', 'TRUE', 'FALSE', 'TEXT','LET','BACKSLASH','STRING')
+'NIL', 'TRUE', 'FALSE', 'TEXT','LET','BACKSLASH','STRING','PRINT','OP','DOUBLEQ')
 literals = ['.','\"',"\\",]
 # Reserved words
 reserved = {
     'nil' : 'NIL',
-    'let' :'LET'
+    'let' :'LET',
+    'print' : 'PRINT',
 }
 
 # Regular expression rules for simple tokens
@@ -22,7 +23,7 @@ t_LPAREN = r'\('
 t_RPAREN = r'\)'
 t_QUOTE = r'\''
 t_TRUE = r'\#t'
-
+t_DOUBLEQ = r'\"'
 def t_NUM(t):
     r'\d+'
     try:
@@ -31,9 +32,12 @@ def t_NUM(t):
         print "Line %d: Number %s is too large!" % (t.lineno,t.value)
         t.value = 0
     return t
-
+def t_OP(t):
+    r'[+\-*\/><=][=\/*]*'
+    t.type = reserved.get(t.value,'OP')    # Check for reserved words
+    return t
 def t_SIMB(t):
-    r'[a-zA-Z_+=\*\-\/><][a-zA-Z0-9_+\*\-?=]*'
+    r'[a-zA-Z_][a-zA-Z0-9_+\*\-?=]*'
     t.type = reserved.get(t.value,'SIMB')    # Check for reserved words
     return t
 

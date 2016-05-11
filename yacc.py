@@ -127,11 +127,22 @@ def p_item_call(p):
 def p_item_empty(p):
     'item : empty'
     p[0] = p[1]
-
-def p_call_PLY(p):
+def p_item_op(p):
+    'items : item OP item'
+    p[0] = [p[2]] + [p[1]] +[p[3]]
+def p_call_print(p):
+    'call : PRINT LPAREN items RPAREN'
+    global ast
+    if DEBUG: print "Calling", p[1], "with", p[3]
+    ast = [p[1]] + [i for i in p[3]]
+    print "ast is: ", ast
+    p[0] = ast
+def p_call(p):
     '''call : LET items
             | LPAREN LET items RPAREN
-            | LPAREN SIMB items RPAREN'''
+            | LPAREN SIMB items RPAREN
+            | LPAREN OP items RPAREN'''
+
     global ast
     if len(p) <4:
         if DEBUG: print "Calling", p[1], "with", p[2]
@@ -153,9 +164,13 @@ def p_call_PLY(p):
     print "ast is: ", ast
     p[0] = ast
 '''
+def p_item_dq(p):
+    'item : DOUBLEQ atom DOUBLEQ'
+    p[0] = p[1] + str(p[2]) +p[3]
 def p_atom_simbol(p):
     '''atom : SIMB '''
     #if len(p) == 2:
+
     p[0] = p[1]
     #else:
        # print p[2]
@@ -172,7 +187,9 @@ def p_atom_num(p):
       p[0] = p[1]
     else:
         p[0] = float(str(p[1]) + str(p[2])+str(p[3]))
-
+def p_atom_op(p):
+    'atom : OP'
+    p[0] = p[1]
 def p_atom_word(p):
     'atom : TEXT'
     p[0] = p[1]

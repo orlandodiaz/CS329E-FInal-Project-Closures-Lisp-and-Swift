@@ -126,6 +126,13 @@ def eval(x, env=global_env):
         import re
         exec(proc(re.sub(r"^'|'$", '', x[1])))
         return toReturn
+    elif x[0] == 'print':
+        if len(x) == 1:
+            return
+        elif len(x) == 2:
+            return eval(x[1],env)
+        else:
+           return eval(x[1:], env)
     elif isinstance(x[0],Symbol) and x[0] not in env and len(x) == 2 and isinstance(x[1], Number):
         dic[x[0]] = x[1]
         return x[1]
@@ -137,7 +144,7 @@ def eval(x, env=global_env):
     elif x[0] == 'let':
         s1 = Constant()
         if len(x) == 4:
-            (_, var,eq,exp) = x
+            (_, eq,var,exp) = x
         else:
             (_, var, exp) = x
         a = {var:exp}
@@ -155,5 +162,5 @@ def eval(x, env=global_env):
             if not isinstance(s[i], List):
                 if s[i] in dic:
                     s[i] = dic[s[i]]
-        args = [eval(exp, env)  for exp in s]
+        args = [eval(exp, env) for exp in s]
         return proc(*args)
