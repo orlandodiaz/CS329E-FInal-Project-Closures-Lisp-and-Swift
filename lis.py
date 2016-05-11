@@ -52,7 +52,7 @@ def standard_env():
         'symbol?': lambda x: isinstance(x, Symbol),
         'abs': abs,
         'mapp':  map,
-    })
+    }) 
     return env
 
 class Env(dict):
@@ -76,7 +76,7 @@ class Procedure(object):
     "A user-defined Scheme procedure."
     def __init__(self, parms, body, env):
         self.parms, self.body, self.env = parms, body, env
-    def __call__(self, *args): 
+    def __call__(self, *args):
         return eval(self.body, Env(self.parms, args, self.env))
 ######################### CONSTANT CLOUSRE
 class Constant(object):
@@ -102,7 +102,7 @@ def eval(x, env=global_env):
     if isinstance(x, Symbol) :# variable reference
         return env.find(x)[x] if env.find(x) is not None else x
     elif not isinstance(x, List):  # constant literal
-        return x                
+        return x
     elif x[0] == 'quote':          # (quote exp)
         (_, exp) = x
         return exp
@@ -137,8 +137,6 @@ def eval(x, env=global_env):
     elif x[0] == 'lambda':         # (lambda (var...) body)
         (_, parms, body) = x
         return Procedure(parms, body, env)
-    elif x[0] == 'mapp':
-        return eval_list(x[1],x[2])
     elif x[0] == 'exec':
         proc = eval(x[0], env)
         import re
@@ -172,8 +170,6 @@ def eval(x, env=global_env):
         a = {var:x}
         env[var] = x
         s1.run('$update')(a)
-
-
     elif x[0] == "random":
         exec('from java.lang import Math; toReturn = Math.random()')
         return toReturn
