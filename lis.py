@@ -52,6 +52,7 @@ def standard_env():
         'round':   round,
         'symbol?': lambda x: isinstance(x, Symbol),
         'abs': abs,
+        'map':map,
     })
     return env
 

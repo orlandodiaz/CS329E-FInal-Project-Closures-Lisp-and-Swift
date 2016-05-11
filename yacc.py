@@ -113,6 +113,9 @@ def p_empty(p):
 def p_item_atom(p):
     'item : atom'
     p[0] = p[1]
+'''def p_item_atoms(p):
+    'item : atom1'
+    p[0] = p[1]'''
 
 def p_item_list(p):
     'item : list'
@@ -170,26 +173,41 @@ def p_call(p):
     print("bb")
     p[0] = [p[3]]'''
 def p_item_dq(p):
-    '''item : DOUBLEQ BACKSLASH LPAREN items RPAREN DOUBLEQ
-             | DOUBLEQ item DOUBLEQ
-             | DOUBLEQ item BACKSLASH LPAREN items RPAREN  DOUBLEQ
-             | DOUBLEQ BACKSLASH LPAREN items RPAREN item DOUBLEQ
-             | DOUBLEQ item BACKSLASH LPAREN items RPAREN item DOUBLEQ'''
-    if p[2]  == "\\":
-        if len(p) == 7:
-            p[0] = (["list"]+[p[1]] + p[4] +[p[6]]) if len(p[4])> 1 else ["list"]+ [p[1]] + [["list"]+p[4]] +[p[6]]
-        else:
-            p[0] = (["list"]+ [p[1]] + [p[4]] +[p[6] + p[7]]) if len(p[4])> 1 else ["list"]+ [p[1]] + [["list"]+p[4]] +[p[6] + p[7]]
-    elif len(p) == 4:
-        p[0] = ["list"] + [p[1] + str(p[2]) + p[3]]
+    '''item : atom1 BACKSLASH LPAREN items atom2
+             | atom1 DOUBLEQ'''
+    if len(p) == 6:
+        p[0] = (["list"]+[p[1]] + [p[4]] +[p[5]]) if len(p[4])>1  else (["list"]+[p[1]] + [["list"]+p[4]] +[p[5]])
+
+    elif len(p) == 3:
+        p[0] = ["list"] + [str(p[1]) + str(p[2])]
+
+##############################
+def p_atom2_c(p):
+    'atom2 : atom2 DOUBLEQ'
+    p[0] = p[1]+ p[2]
+def p_atom2_a(p):
+    'atom2 : atom2 SIMB'
+    if p[2] in "!?.,%":
+       p[0] = p[1]+ p[2]
     else:
-        if len(p) == 8:
-            p[0] = (["list"]+[p[1] + p[2]] + [p[5]] +[p[7]]) if len(p[5])>1 else ["list"]+[p[1] + p[2]] +[["list"]+p[5]]+[p[7]]
-        else:
-            p[0] = (["list"]+ [p[1] + p[2]] + [p[5]] + [p[7]+ p[8]]) if len(p[5]) > 1 else ["list"]+ [p[1] + p[2]] + [["list"]+p[5]] + [p[7]+ p[8]]
-def p_atom_s(p):
-    'atom : atom SIMB'
-    p[0] = p[1]+" " + p[2]
+        p[0] = p[1]+" "+ p[2]
+
+def p_atom2_chec(p):
+    '''atom2 : RPAREN SIMB
+          |  RPAREN DOUBLEQ'''
+    p[0] = p[2]
+
+def p_atoms_check(p):
+    'atom1 : atom1 BACKSLASH'
+    p[0] = p[1]
+def p_atoms_st(p):
+    'atom1 : atom1 SIMB'
+    p[0] = p[1]+" "+ p[2]
+
+def p_atoms_s(p):
+    'atom1 : DOUBLEQ SIMB'
+    p[0] = p[1]+ p[2]
+###############################
 def p_atom_simbol(p):
     '''atom : SIMB '''
     #if len(p) == 2:
